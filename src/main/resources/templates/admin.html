@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Admin | Sistema de Ensino - Gestão Escolar</title>
+
+    <!-- BOOTSTRAP 5 + ICONS + FONTS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <style>
+        /* ========== GLOBAL & VARIÁVEIS ========== */
+        :root {
+            --body-bg: #f0f2f8;
+            --sidebar-bg: #0f172a;
+            --sidebar-text: #e2e8f0;
+            --card-bg: #ffffff;
+            --card-text: #1e293b;
+            --primary-gradient: linear-gradient(135deg, #4f46e5, #7c3aed);
+            --primary-hover: #4338ca;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--body-bg);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* ========== SIDEBAR ========== */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            height: 100vh;
+            width: 280px;
+            background: var(--sidebar-bg);
+            color: white;
+            z-index: 1050;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 4px 0 20px rgba(0,0,0,0.1);
+            overflow-y: auto;
+        }
+
+        .sidebar.collapsed {
+            margin-left: -280px;
+        }
+
+        .sidebar-header {
+            padding: 28px 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            background: rgba(0,0,0,0.2);
+        }
+
+        .sidebar-header h3 {
+            font-weight: 700;
+            font-size: 1.6rem;
+            background: linear-gradient(135deg, #a5b4fc, #c4b5fd);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .sidebar-header p {
+            font-size: 0.75rem;
+            opacity: 0.7;
+            letter-spacing: 1px;
+        }
+
+        .sidebar-menu {
+            padding: 20px 0;
+        }
+
+        .sidebar-menu-item {
+            padding: 14px 28px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            color: var(--sidebar-text);
+            text-decoration: none;
+            transition: 0.2s;
+            font-weight: 500;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar-menu-item:hover, .sidebar-menu-item.active {
+            background: rgba(255,255,255,0.08);
+            border-left-color: #818cf8;
+            color: white;
+        }
+
+        /* ========== MAIN CONTENT ========== */
+        .main-content {
+            margin-left: 280px;
+            padding: 24px 28px;
+            transition: margin 0.3s ease;
+            min-height: 100vh;
+        }
+
+        .main-content.expanded {
+            margin-left: 0;
+        }
+
+        /* top bar */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .toggle-btn {
+            background: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+            transition: 0.2s;
+        }
+
+        .user-info {
+            background: white;
+            padding: 8px 20px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+
+        .user-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: var(--primary-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        /* métricas cards */
+        .metric-card {
+            background: white;
+            border-radius: 28px;
+            padding: 1.5rem;
+            transition: all 0.25s;
+            cursor: pointer;
+            border: 1px solid rgba(0,0,0,0.03);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.02), 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .metric-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 30px -12px rgba(0,0,0,0.15);
+        }
+        .metric-icon {
+            width: 54px;
+            height: 54px;
+            background: var(--primary-gradient);
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 18px;
+        }
+        .metric-icon i { font-size: 26px; color: white; }
+        .metric-card h6 { font-size: 0.8rem; letter-spacing: 1px; font-weight: 700; color: #5b677b; margin-bottom: 8px; }
+        .metric-card h3 { font-size: 2.4rem; font-weight: 800; color: #0f172a; margin: 0; }
+
+        /* TABS custom */
+        .nav-tabs-custom {
+            border-bottom: 1px solid #e2e8f0;
+            gap: 6px;
+            margin-bottom: 28px;
+        }
+        .nav-tabs-custom .nav-link {
+            border: none;
+            background: transparent;
+            color: #475569;
+            font-weight: 600;
+            padding: 12px 28px;
+            border-radius: 40px;
+            transition: 0.2s;
+        }
+        .nav-tabs-custom .nav-link i { margin-right: 8px; }
+        .nav-tabs-custom .nav-link:hover { background: #eef2ff; color: #4f46e5; }
+        .nav-tabs-custom .nav-link.active {
+            background: var(--primary-gradient);
+            color: white;
+            box-shadow: 0 4px 12px rgba(79,70,229,0.3);
+        }
+
+        .content-card {
+            background: white;
+            border-radius: 32px;
+            padding: 28px;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+
+        .search-box input {
+            border-radius: 60px;
+            border: 1px solid #e2e8f0;
+            padding: 12px 20px 12px 48px;
+            width: 100%;
+        }
+        .search-box i {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+        }
+
+        .btn-custom-primary {
+            background: var(--primary-gradient);
+            border: none;
+            padding: 10px 26px;
+            border-radius: 40px;
+            font-weight: 600;
+            color: white;
+            transition: 0.2s;
+        }
+        .btn-custom-primary:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 18px rgba(79,70,229,0.35);
+            color: white;
+        }
+
+        .table-custom thead th {
+            background: #f8fafc;
+            color: #1e293b;
+            font-weight: 700;
+            border-bottom: 2px solid #e2e8f0;
+            padding: 16px 12px;
+        }
+        .table-custom tbody td {
+            vertical-align: middle;
+            padding: 14px 12px;
+        }
+        .badge-role {
+            padding: 6px 14px;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+        .badge-role.ADMIN { background: #e0e7ff; color: #3730a3; }
+        .badge-role.PROFESSOR { background: #fef3c7; color: #b45309; }
+        .badge-role.ALUNO { background: #d1fae5; color: #065f46; }
+
+        .btn-action {
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            margin: 3px;
+        }
+
+        /* modal acessível */
+        .modal-content-custom {
+            border-radius: 32px;
+            overflow: hidden;
+        }
+        .modal-header-custom {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 18px 24px;
+        }
+
+        /* acessibilidade */
+        .focus-outline:focus-visible {
+            outline: 3px solid #4f46e5;
+            outline-offset: 2px;
+        }
+        button:focus-visible, a:focus-visible, input:focus-visible {
+            outline: 3px solid #4f46e5;
+            outline-offset: 2px;
+        }
+
+        /* alert container */
+        #alertContainer {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 1100;
+            width: 340px;
+        }
+        @media (max-width: 768px) {
+            .sidebar { margin-left: -280px; }
+            .main-content { margin-left: 0; }
+            .main-content.expanded { margin-left: 0; }
+            .metric-card { margin-bottom: 18px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- SIDEBAR COM ATALHOS ACESSÍVEIS -->
+<div class="sidebar" id="sidebar" aria-label="Menu lateral de navegação">
+    <div class="sidebar-header">
+        <h3><i class="fas fa-graduation-cap"></i> GestãoEnsino</h3>
+        <p>Portal Admin</p>
+    </div>
+    <div class="sidebar-menu" role="navigation">
+    <!-- <a class="sidebar-menu-item" href="/dashboard" aria-label="Dashboard principal">
+            <i class="fas fa-chart-line"></i> Dashboard
+        </a> --> 
+        <a class="sidebar-menu-item active" href="/admin" aria-current="page">
+            <i class="fas fa-shield-alt"></i> Admin
+        </a>
+        <a class="sidebar-menu-item" href="/logout" aria-label="Sair do sistema">
+            <i class="fas fa-sign-out-alt"></i> Sair
+        </a>
+    </div>
+    <div class="p-3 small text-center text-white-50 mt-auto">
+        <i class="fas fa-universal-access"></i> Acessível
+    </div>
+</div>
+
+<div class="main-content" id="mainContent">
+    <div class="top-bar">
+        <button class="toggle-btn" onclick="toggleSidebar()" aria-label="Abrir ou fechar menu lateral">
+            <i class="fas fa-bars"></i> Menu
+        </button>
+        <div class="user-info">
+            <div class="user-avatar"><i class="fas fa-user-cog"></i></div>
+            <div class="fw-semibold">Admin Sistema</div>
+            <i class="fas fa-chevron-down fa-xs"></i>
+        </div>
+    </div>
+
+    <div class="container-fluid px-0">
+        <!-- CABEÇALHO -->
+        <div class="page-header mb-4">
+            <h2 class="fw-bold" style="color: #0f172a;"><i class="fas fa-chalkboard-user me-2"></i>Painel Administrativo</h2>
+            <p class="text-secondary">Visão centralizada: alunos, usuários e notas do sistema</p>
+        </div>
+
+        <!-- DASHBOARD MINI CARDS -->
+        <div class="row mb-4 g-4">
+            <div class="col-md-3 col-sm-6">
+                <div class="metric-card" onclick="mostrarLogs('alunos')">
+                    <div class="metric-icon"><i class="fas fa-users"></i></div>
+                    <h6>Total Alunos</h6>
+                    <h3 id="totalAlunos">0</h3>
+                    <small class="text-muted"><i class="fas fa-chart-simple"></i> Matriculados</small>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="metric-card" onclick="mostrarLogs('usuarios')">
+                    <div class="metric-icon"><i class="fas fa-user-lock"></i></div>
+                    <h6>Total Usuários</h6>
+                    <h3 id="totalUsuarios">0</h3>
+                    <small class="text-muted">ativos no sistema</small>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="metric-card" onclick="mostrarLogs('notas')">
+                    <div class="metric-icon"><i class="fas fa-clipboard-list"></i></div>
+                    <h6>Notas Lançadas</h6>
+                    <h3 id="totalNotas">0</h3>
+                    <small class="text-muted">avaliações registradas</small>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="metric-card" onclick="mostrarLogs('logs')">
+                    <div class="metric-icon"><i class="fas fa-history"></i></div>
+                    <h6>Logs Sistema</h6>
+                    <h3 id="logCount">12</h3>
+                    <small class="text-muted">últimas ações</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- ALERTAS -->
+        <div id="alertContainer"></div>
+
+        <!-- TABS GERENCIAVEIS -->
+        <ul class="nav nav-tabs nav-tabs-custom" id="adminTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="alunos-tab" data-bs-toggle="tab" data-bs-target="#alunosPanel" type="button" role="tab"><i class="fas fa-graduation-cap"></i> Alunos</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="usuarios-tab" data-bs-toggle="tab" data-bs-target="#usuariosPanel" type="button" role="tab"><i class="fas fa-users-cog"></i> Usuários</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="notas-tab" data-bs-toggle="tab" data-bs-target="#notasPanel" type="button" role="tab"><i class="fas fa-star"></i> Notas</button>
+            </li>
+        </ul>
+
+        <div class="tab-content mt-3">
+            <!-- PAINEL ALUNOS -->
+            <div class="tab-pane fade show active" id="alunosPanel" role="tabpanel">
+                <div class="content-card">
+                    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+                        <div class="search-box position-relative flex-grow-1" style="max-width: 380px;">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="buscaAlunos" class="form-control" placeholder="Buscar por nome, RA ou email..." onkeyup="filtrarTabela('tabelaAlunos', this.value)">
+                        </div>
+                        <button class="btn-custom-primary" data-bs-toggle="modal" data-bs-target="#modalAluno"><i class="fas fa-plus-circle"></i> Novo Aluno</button>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-custom align-middle" id="tabelaAlunos">
+                            <thead>
+                                <tr><th>RA</th><th>Nome Completo</th><th>E-mail</th><th>Média</th><th>Situação</th><th>Ações</th></tr>
+                            </thead>
+                            <tbody id="alunosTableBody">
+                                <tr><td colspan="6" class="text-center text-muted py-4">Carregando alunos...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PAINEL USUÁRIOS -->
+            <div class="tab-pane fade" id="usuariosPanel" role="tabpanel">
+                <div class="content-card">
+                    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+                        <div class="search-box position-relative flex-grow-1" style="max-width: 380px;">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="buscaUsuarios" class="form-control" placeholder="Buscar nome ou email..." onkeyup="filtrarTabela('tabelaUsuarios', this.value)">
+                        </div>
+                        <button class="btn-custom-primary" data-bs-toggle="modal" data-bs-target="#modalUsuario"><i class="fas fa-user-plus"></i> Novo Usuário</button>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-custom" id="tabelaUsuarios">
+                            <thead><tr><th>Nome</th><th>Email</th><th>Perfil</th><th>Ações</th></tr></thead>
+                            <tbody id="usuariosTableBody"><tr><td colspan="4" class="text-center">Carregando...</td></tr></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PAINEL NOTAS -->
+            <div class="tab-pane fade" id="notasPanel" role="tabpanel">
+                <div class="content-card">
+                    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+                        <div class="search-box position-relative flex-grow-1" style="max-width: 380px;">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="buscaNotas" class="form-control" placeholder="Aluno ou disciplina..." onkeyup="filtrarTabela('tabelaNotas', this.value)">
+                        </div>
+                        <button class="btn-custom-primary" data-bs-toggle="modal" data-bs-target="#modalNota"><i class="fas fa-plus-circle"></i> Nova Nota</button>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-custom" id="tabelaNotas">
+                            <thead><tr><th>Aluno</th><th>RA</th><th>Avaliação</th><th>Nota</th><th>Data</th><th>Ações</th></tr></thead>
+                            <tbody id="notasTableBody"><tr><td colspan="6" class="text-center">Carregando...</td></tr></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ========== MODAIS CADASTRO ========== -->
+
+<!-- MODAL ALUNO -->
+<div class="modal fade" id="modalAluno" tabindex="-1" aria-labelledby="modalAlunoLabel" aria-modal="true">
+    <div class="modal-dialog modal-dialog-centered"><div class="modal-content modal-content-custom">
+        <div class="modal-header modal-header-custom"><h5 class="modal-title" id="modalAlunoLabel"><i class="fas fa-user-graduate"></i> Cadastrar Aluno</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+        <form id="formNovoAluno">
+            <div class="modal-body">
+                <div class="mb-3"><label class="form-label fw-bold">RA *</label><input type="text" name="ra" id="alunoRa" class="form-control" placeholder="Ex: 2024001" required></div>
+                <div class="mb-3"><label class="form-label fw-bold">Nome Completo *</label><input type="text" name="usuario.nome" id="alunoNome" class="form-control" required></div>
+                <div class="mb-3"><label class="form-label fw-bold">Email *</label><input type="email" name="usuario.email" id="alunoEmail" class="form-control" required></div>
+                <div class="mb-3"><label class="form-label fw-bold">Senha padrão</label><input type="text" name="usuario.senha" id="alunoSenha" class="form-control" value="123456" placeholder="mínimo 6 caracteres"></div>
+            </div>
+            <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button><button type="submit" class="btn-custom-primary">Salvar Aluno</button></div>
+        </form>
+    </div></div>
+</div>
+
+<!-- MODAL USUÁRIO -->
+<div class="modal fade" id="modalUsuario" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content modal-content-custom">
+    <div class="modal-header modal-header-custom"><h5 class="modal-title"><i class="fas fa-id-card"></i> Novo Usuário</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+    <form id="formNovoUsuario">
+        <div class="modal-body">
+            <div class="mb-3"><label>Nome *</label><input type="text" name="nome" id="usuarioNome" class="form-control" required></div>
+            <div class="mb-3"><label>Email *</label><input type="email" name="email" id="usuarioEmail" class="form-control" required></div>
+            <div class="mb-3"><label>Senha *</label><input type="password" name="senha" id="usuarioSenha" class="form-control" required></div>
+            <div class="mb-3"><label>Perfil</label><select name="role" id="usuarioRole" class="form-control"><option value="ADMIN">Administrador</option><option value="PROFESSOR">Professor</option><option value="ALUNO">Aluno</option></select></div>
+        </div>
+        <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button><button type="submit" id="btnSalvarUsuario" class="btn-custom-primary">Criar Usuário</button></div>
+    </form>
+</div></div></div>
+
+<!-- MODAL NOTA -->
+<div class="modal fade" id="modalNota" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content modal-content-custom">
+    <div class="modal-header modal-header-custom"><h5 class="modal-title"><i class="fas fa-pen-fancy"></i> Lançar Nota</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+    <form id="formNovaNota">
+        <div class="modal-body">
+            <div class="mb-3"><label>Selecione a Turma</label><select id="notaTurmaId" class="form-control" required></select></div>
+            <div class="mb-3"><label>Selecione o Aluno</label><select id="notaAlunoId" class="form-control" required><option value="">Carregando alunos...</option></select></div>
+            <div class="mb-3"><label>Disciplina / Avaliação</label><select id="notaAvaliacaoId" class="form-control" required><option value="">Selecione a avaliação</option></select></div>
+            <div class="mb-3"><label>Nota (0 a 10)</label><input type="number" step="0.1" min="0" max="10" id="notaValor" class="form-control" required></div>
+            <div class="mb-3"><label>Data Lançamento</label><input type="date" id="notaData" class="form-control" value="2026-04-26"></div>
+        </div>
+        <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button><button type="submit" class="btn-custom-primary">Registrar Nota</button></div>
+    </form>
+</div></div></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // ========================== SIMULAÇÃO DE API / BACKEND (inline) ==========================
+    // Dados mockados baseados nos models (Aluno, Usuario, Nota)
+    let alunosDB = [];
+    let usuariosDB = [
+        { id: 1, nome: "Admin Master", email: "admin@admin.com", senha: "admin123", role: "ADMIN" },
+        { id: 2, nome: "Prof João", email: "joao.prof@escola.com", senha: "prof123", role: "PROFESSOR" }
+    ];
+    let notasDB = [
+        { id: 1, alunoId: 1, alunoNome: "Ana Carolina Silva", ra: "2024001", avaliacao: "Matemática", valor: 8.5, dataLancamento: "2026-04-20" },
+        { id: 2, alunoId: 2, alunoNome: "Bruno Souza", ra: "2024002", avaliacao: "Português", valor: 6.5, dataLancamento: "2026-04-21" }
+    ];
+    let alunoEditandoId = null;
+    let notaEditando = false;
+
+    // ATUALIZAR CARDS
+    function atualizarCards() {
+
+        //CARD TOTAL USUÁRIOS
+        fetch("/usuarios/listar-ajax")
+        .then(res => res.json())
+        .then(usuarios => {
+            document.getElementById('totalUsuarios').innerText = usuarios.length;
+            document.getElementById('logCount').innerText = usuarios.length;
+        });
+        //CARD TOTAL ALUNOS
+        fetch("/alunos/listar-ajax")
+        .then(res => res.json())
+        .then(alunos => {
+            document.getElementById('totalAlunos').innerText = alunos.length;
+        });
+        
+        document.getElementById('totalNotas').innerText = notasDB.length;
+    }
+
+    // RENDERIZAR TABELA DE ALUNOS
+    function renderTabelaAlunos() {
+
+        fetch("/alunos/listar-ajax")
+        .then(response => response.json())
+        .then(alunos => {
+
+            const tbody = document.getElementById('alunosTableBody');
+
+            if(!alunos || alunos.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6">Nenhum aluno cadastrado</td></tr>';
+                return;
+            }
+        
+            alunosDB = alunos;
+
+            tbody.innerHTML = alunos.map(aluno => {
+
+                let situBadge = aluno.situacao === "Aprovado"
+                    ? '<span class="badge bg-success">Aprovado</span>'
+                    : '<span class="badge bg-danger">Reprovado</span>';
+
+                return `
+                    <tr>
+                        <td>${aluno.ra}</td>
+                        <td><strong>${aluno.nome}</strong></td>
+                        <td>${aluno.email}</td>
+                        <td>${aluno.media.toFixed(1)}</td>
+                        <td>${situBadge}</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary" onclick="abrirEditarAluno(${aluno.id}, '${aluno.ra}', '${aluno.nome}', '${aluno.email}')">
+                                <i class="fas fa-edit"></i> Editar
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger btn-action"
+                                onclick="excluirAluno(${aluno.id})">
+                                <i class="fas fa-trash-alt"></i> Excluir
+                            </button>
+
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+
+        })
+        .catch(() => {
+            console.error("Erro ao carregar alunos");
+        });
+    }
+
+    //RENDERIZAR TABELA DE USUÁRIOS
+    function renderTabelaUsuarios() {
+
+        fetch("/usuarios/listar-ajax")
+        .then(response => response.json())
+        .then(usuarios => {
+
+            const tbody = document.getElementById('usuariosTableBody');
+
+            if(!usuarios || usuarios.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4">Nenhum usuário</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = usuarios.map(user => `
+                <tr>
+                    <td>${user.nome}</td>
+                    <td>${user.email}</td>
+                    <td><span class="badge-role ${user.role}">${user.role}</span></td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary" onclick="abrirEditarUsuario(${user.id}, '${user.nome}', '${user.email}', '${user.role}')">
+                            <i class="fas fa-edit"></i> Editar
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger btn-action" onclick="excluirUsuario(${user.id})">
+                            <i class="fas fa-trash-alt"></i> Excluir
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+
+        })
+        .catch(() => {
+            console.error("Erro ao carregar usuários");
+        });
+    }
+
+    //RENDERIZAR TABELA DE NOTAS
+    function renderTabelaNotas() {
+
+        fetch("/notas/listar-ajax")
+       .then(response => response.json())
+       .then(notas => {
+
+            const tbody = document.getElementById('notasTableBody');
+
+            if(!notas || notas.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6">Nenhuma nota lançada</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = notas.map(nota => `
+                <tr>
+                    <td>${nota.alunoNome || '-'}</td>
+                    <td>${nota.ra || '-'}</td>
+                    <td>${nota.avaliacao || '-'}</td>
+                    <td><span class="fw-bold">${nota.valor}</span></td>
+                    <td>${formatarData(nota.dataLancamento)}</td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary" onclick="abrirEditarNota(${nota.alunoId}, ${nota.avaliacaoId}, ${nota.valor}, '${nota.dataLancamento}')">
+                            <i class="fas fa-edit"></i> Editar
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger btn-action" onclick="excluirNota(${nota.id})">
+                            <i class="fas fa-trash-alt"></i> Excluir
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+
+        })
+        .catch(() => {
+            console.error("Erro ao carregar notas");
+        });
+    }
+
+    function atualizarSelectAlunosModal() {
+        const select = document.getElementById('notaAlunoId');
+        if(select) {
+            select.innerHTML = '<option value="">Selecione um aluno</option>' + alunosDB.map(a => `<option value="${a.id}">${a.nome} (RA: ${a.ra})</option>`).join('');
+        }
+    }
+    
+    //MODAL EDITAR USUÁRIO
+    let usuarioEditandoId = null;
+
+        function abrirEditarUsuario(id, nome, email, role) {
+
+        usuarioEditandoId = id;
+
+        document.getElementById('usuarioNome').value = nome;
+        document.getElementById('usuarioEmail').value = email;
+        document.getElementById('usuarioSenha').value = '';
+        document.getElementById('usuarioRole').value = role;
+
+        //MUDA TÍTULO DO MODAL
+        document.querySelector('#modalUsuario .modal-title').innerHTML =
+            '<i class="fas fa-edit"></i> Editar Usuário';
+        document.getElementById('btnSalvarUsuario').innerText = "Salvar Alterações";
+    
+        new bootstrap.Modal(document.getElementById('modalUsuario')).show();
+    }
+        
+    //MODAL EDITAR ALUNO
+    function abrirEditarAluno(id, ra, nome, email) {
+
+        alunoEditandoId = id;
+
+        document.getElementById('alunoRa').value = ra;
+        document.getElementById('alunoNome').value = nome;
+        document.getElementById('alunoEmail').value = email;
+        document.getElementById('alunoSenha').value = "";
+
+
+        // senha opcional ao editar
+        document.getElementById('alunoSenha').value = '';
+
+        // alterar título
+        document.getElementById('modalAlunoLabel').innerHTML =
+            '<i class="fas fa-edit"></i> Editar Aluno';
+
+        document.querySelector('#modalAluno button[type="submit"]').innerText = "Salvar Alterações";
+
+        new bootstrap.Modal(document.getElementById('modalAluno')).show();
+    }
+    
+    //EDITAR NOTA ALUNO
+    function abrirEditarNota(alunoId, avaliacaoId, valor, data) {
+
+        notaEditando = true;
+
+        // preencher campos
+        document.getElementById('notaAlunoId').value = alunoId;
+        document.getElementById('notaAvaliacaoId').value = avaliacaoId;
+        document.getElementById('notaValor').value = valor;
+
+        if (data) {
+            document.getElementById('notaData').value = data;
+        }
+
+        // alterar título
+        document.querySelector('#modalNota .modal-title').innerHTML =
+            '<i class="fas fa-edit"></i> Editar Nota';
+
+        document.querySelector('#formNovaNota button[type="submit"]').innerText = "Salvar Alterações";
+
+        new bootstrap.Modal(document.getElementById('modalNota')).show();
+    }
+
+    // EXCLUIR ALUNO E REMOVER NOTAS ASSOCIADAS
+    window.excluirAluno = function(id) {
+
+        Swal.fire({
+            title: 'Excluir aluno?',
+            icon: 'warning',
+            showCancelButton: true
+        }).then((result) => {
+
+            if(result.isConfirmed) {
+
+            	fetch(`/alunos/excluir/${id}`, {
+            	    method: "DELETE"
+            	})
+            	.then(response => {
+
+            	    if(response.ok) {
+            	        renderTabelaAlunos();
+            	        atualizarCards();
+            	        exibirAlerta('Aluno excluído com sucesso', 'success');
+
+            	    } else {
+            	        exibirAlerta('Erro ao excluir aluno', 'danger');
+            	    }
+
+            	})
+            	.catch(() => {
+            	    exibirAlerta('Erro na requisição', 'danger');
+            	});
+            }
+        });
+    };
+    
+    //EXCLUIR USUÁRIO 
+    window.excluirUsuario = function(id) {
+
+        Swal.fire({
+            title: 'Excluir usuário?',
+            text: 'O acesso será bloqueado permanentemente.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            confirmButtonText: 'Sim, excluir'
+        }).then(res => {
+
+            if(res.isConfirmed) {
+
+                fetch(`/usuarios/excluir/${id}`, {
+                    method: "DELETE"
+                })
+                .then(response => {
+
+                    if(response.ok) {
+                        renderTabelaUsuarios();                        
+                        atualizarCards();
+                        exibirAlerta('Usuário excluído com sucesso', 'success');
+
+                    } else {
+                        exibirAlerta('Erro ao excluir usuário', 'danger');
+                    }
+                })
+                .catch(() => {
+                    exibirAlerta('Erro na requisição', 'danger');
+                });
+            }
+        });
+    }
+    
+    //EXCLUIR NOTA ALUNOS
+    window.excluirNota = function(id) {
+
+        Swal.fire({
+            title: 'Remover nota?',
+            icon: 'warning',
+            showCancelButton: true
+        }).then(res => {
+
+            if(res.isConfirmed) {
+
+                fetch(`/notas/excluir/${id}`, {
+                    method: "DELETE"
+                })
+                .then(response => {
+
+                    if(response.ok) {
+                        renderTabelaNotas();
+                        atualizarCards();
+                        exibirAlerta('Nota excluída', 'success');
+                    } else {
+                        exibirAlerta('Erro ao excluir nota', 'danger');
+                    }
+
+                })
+                .catch(() => {
+                    exibirAlerta('Erro na requisição', 'danger');
+                });
+            }
+        });
+    };
+
+    // SIMULAÇÃO DE LOGS
+    window.mostrarLogs = function(tipo) {
+        let msg = '';
+        if(tipo === 'alunos') msg = `📊 LOG: Total de alunos ativos: ${alunosDB.length}. Último cadastro: ${alunosDB.length ? alunosDB[alunosDB.length-1].nome : 'Nenhum'}`;
+        else if(tipo === 'usuarios') msg = `👥 LOG: Sistema possui ${usuariosDB.length} usuários. Perfis: ${usuariosDB.map(u=>u.role).join(', ')}`;
+        else if(tipo === 'notas') msg = `📝 LOG: ${notasDB.length} notas lançadas. Média geral: ${notasDB.length ? (notasDB.reduce((acc,n)=>acc+n.valor,0)/notasDB.length).toFixed(1) : '0'}`;
+        else msg = `🕒 LOG SISTEMA: Últimas ações - cadastros recentes, exclusões e atualizações registradas às ${new Date().toLocaleTimeString()}`;
+        Swal.fire({ title: 'Log do Sistema', text: msg, icon: 'info', toast: false });
+    }
+
+    function exibirAlerta(mensagem, tipo = 'success') {
+        const container = document.getElementById('alertContainer');
+        const alertDiv = document.createElement('div');
+        alertDiv.className = `alert alert-${tipo === 'success' ? 'success' : 'danger'} alert-dismissible fade show shadow rounded-4`;
+        alertDiv.innerHTML = `<strong><i class="fas fa-bell"></i> ${mensagem}</strong><button type="button" class="btn-close" data-bs-dismiss="alert"></button>`;
+        container.appendChild(alertDiv);
+        setTimeout(() => { if(alertDiv) alertDiv.remove(); }, 4000);
+    }
+
+    //FORMULÁRIO CADASTRO NOVO ALUNO
+    document.getElementById('formNovoAluno')?.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const formData = new FormData(this);
+
+        let url = "/alunos/salvar-ajax";
+        let method = "POST";
+
+        if (alunoEditandoId) {
+            url = `/alunos/editar-ajax/${alunoEditandoId}`;
+            method = "PUT";
+        }
+
+        fetch(url, {
+            method: method,
+            body: formData
+        })
+        .then(res => res.json())
+        .then(() => {
+
+            renderTabelaAlunos();
+            atualizarCards();
+
+            bootstrap.Modal.getInstance(document.getElementById('modalAluno')).hide();
+            document.getElementById('formNovoAluno').reset();
+
+            alunoEditandoId = null;
+
+            exibirAlerta('Aluno salvo com sucesso!', 'success');
+        })
+        .catch(() => {
+            exibirAlerta('Erro ao salvar aluno', 'danger');
+        });
+    });
+    
+    //FORMULÁRIO CADASTRO E EDITAR NOVO USUÁRIO
+    document.getElementById('formNovoUsuario')?.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const formData = new FormData(this);
+
+        let url = "/usuarios/salvar-ajax";
+        let method = "POST";
+
+        if (usuarioEditandoId) {
+            url = `/usuarios/editar-ajax/${usuarioEditandoId}`;
+            method = "PUT";
+        }
+
+        fetch(url, {
+            method: method,
+            body: formData
+        })
+        .then(res => res.json())
+        .then(usuario => {
+
+            renderTabelaUsuarios();
+            atualizarCards();
+
+            bootstrap.Modal.getInstance(document.getElementById('modalUsuario')).hide();
+            document.getElementById('formNovoUsuario').reset();
+
+            usuarioEditandoId = null;
+
+            exibirAlerta('Usuário salvo com sucesso!', 'success');
+        })
+        .catch(() => {
+            exibirAlerta('Erro ao salvar usuário', 'danger');
+        });
+    });
+    
+    //RESET FORMULÁRIO USUÁRIO PARA PADRÃO
+    document.querySelector('[data-bs-target="#modalUsuario"]').addEventListener('click', () => {
+        usuarioEditandoId = null;
+
+        document.getElementById('formNovoUsuario').reset();
+
+        document.getElementById('btnSalvarUsuario').innerText = "Criar Usuário";
+
+        document.querySelector('#modalUsuario .modal-title').innerHTML =
+            '<i class="fas fa-id-card"></i> Novo Usuário';
+    });
+    
+    //RESET FORMULÁRIO ALUNO PARA PADRÃO
+    document.querySelector('[data-bs-target="#modalAluno"]').addEventListener('click', () => {
+
+        alunoEditandoId = null;
+
+        document.getElementById('formNovoAluno').reset();
+
+        document.getElementById('modalAlunoLabel').innerHTML =
+            '<i class="fas fa-user-graduate"></i> Cadastrar Aluno';
+
+        document.querySelector('#modalAluno button[type="submit"]').innerText = "Salvar Aluno";
+    });
+    
+    //RESET FORMULÁRIO NOTA PARA PADRÃO
+    document.querySelector('[data-bs-target="#modalNota"]').addEventListener('click', () => {
+
+        notaEditando = false;
+
+        document.getElementById('formNovaNota').reset();
+
+        document.querySelector('#modalNota .modal-title').innerHTML =
+            '<i class="fas fa-pen-fancy"></i> Lançar Nota';
+
+        document.querySelector('#formNovaNota button[type="submit"]').innerText = "Registrar Nota";
+    });
+    
+    //CARREGAR TURMA, ALUNO, AVALIAÇÕES DA TURMA
+    document.addEventListener('DOMContentLoaded', () => {
+
+        document.getElementById('notaTurmaId')?.addEventListener('change', function () {
+
+            const turmaId = this.value;
+
+            if (!turmaId) return;
+
+            // ALUNOS
+            fetch(`/turmas/${turmaId}/alunos-ajax`)
+            .then(res => res.json())
+            .then(alunos => {
+                const select = document.getElementById('notaAlunoId');
+                select.innerHTML = '<option value="">Selecione o aluno</option>' +
+                    alunos.map(a =>
+                        `<option value="${a.id}">${a.nome} (RA: ${a.ra})</option>`
+                    ).join('');
+            });
+
+            // AVALIAÇÕES
+            fetch(`/turmas/${turmaId}/avaliacoes`)
+            .then(res => res.json())
+            .then(avaliacoes => {
+                const select = document.getElementById('notaAvaliacaoId');
+                select.innerHTML = '<option value="">Selecione a avaliação</option>' +
+                    avaliacoes.map(a =>
+                        `<option value="${a.id}">${a.nome}</option>`
+                    ).join('');
+            });
+
+        });
+
+    });
+    
+    //CARREGAR TURMAS
+    function carregarTurmas() {
+        fetch("/turmas/listar-ajax")
+       .then(res => res.json())
+       .then(turmas => {
+
+            const select = document.getElementById('notaTurmaId');
+
+            select.innerHTML = '<option value="">Selecione a turma</option>' +
+                turmas.map(t =>
+                    `<option value="${t.id}">${t.nome}</option>`
+                ).join('');
+        });
+    }
+    
+    // FORMULÁRIO DE CADASTRO DE NOTAS
+    document.getElementById('formNovaNota')?.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const alunoId = document.getElementById('notaAlunoId').value;
+        const avaliacaoId = document.getElementById('notaAvaliacaoId').value;
+        const valor = document.getElementById('notaValor').value;
+        const data = document.getElementById('notaData').value;
+
+        if (!alunoId || !avaliacaoId || !valor) {
+            return exibirAlerta('Preencha todos os campos', 'danger');
+        }
+
+        const formData = new FormData();
+        formData.append("aluno", alunoId);
+        formData.append("avaliacao", avaliacaoId);
+        formData.append("valor", valor);
+        formData.append("dataLancamento", data);
+
+        fetch("/notas/salvar-ajax", {
+            method: "POST",
+            body: formData
+        })
+        .then(res => res.json())
+        .then(() => {
+
+            renderTabelaNotas();
+            atualizarCards();
+
+            bootstrap.Modal.getInstance(document.getElementById('modalNota')).hide();
+            document.getElementById('formNovaNota').reset();
+
+            exibirAlerta('Nota registrada com sucesso!', 'success');
+        })
+        .catch(() => {
+            exibirAlerta('Erro ao salvar nota', 'danger');
+        });
+    });
+
+    // FILTRO PARA TABELAS
+    window.filtrarTabela = function(tableId, termo) {
+        const rows = document.querySelectorAll(`#${tableId} tbody tr`);
+        const lowerTerm = termo.toLowerCase();
+        rows.forEach(row => {
+            const text = row.innerText.toLowerCase();
+            row.style.display = text.includes(lowerTerm) ? '' : 'none';
+        });
+    };
+    
+    //FORMATAR DATA TABELA NOTAS
+    function formatarData(data) {
+        if (!data) return '-';
+
+        const partes = data.split('-'); // yyyy-MM-dd
+        return `${partes[2]}/${partes[1]}/${partes[0]}`;
+    }
+
+    // SIDEBAR
+    window.toggleSidebar = function() {
+        const sidebar = document.getElementById('sidebar');
+        const main = document.getElementById('mainContent');
+        sidebar.classList.toggle('collapsed');
+        main.classList.toggle('expanded');
+        localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
+    };
+    if(localStorage.getItem('sidebarCollapsed') === 'true') {
+        document.getElementById('sidebar')?.classList.add('collapsed');
+        document.getElementById('mainContent')?.classList.add('expanded');
+    }
+
+    // INICIALIZAÇÃO TOTAL 
+    function init() {
+        atualizarCards();
+        renderTabelaAlunos();
+        renderTabelaUsuarios();
+        renderTabelaNotas();
+        atualizarSelectAlunosModal();
+        carregarTurmas();
+    }
+    init();
+</script>
+</body>
+</html>

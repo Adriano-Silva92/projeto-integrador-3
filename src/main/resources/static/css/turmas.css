@@ -1,0 +1,234 @@
+        :root {
+           --card-bg: white;
+           --card-text: #333;
+           --shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+        
+        
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container-main {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .content-card {
+            background: white;
+            border-radius: 15px;
+            padding: 0;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+        
+        .page-title {
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 0;
+        }
+        
+        .btn-primary-custom {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 10px;
+            padding: 10px 25px;
+            font-weight: 600;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .table-custom {
+            margin-bottom: 0;
+        }
+        
+        .table-custom thead th {
+            background: #f8f9fa;
+            border-bottom: 2px solid #e9ecef;
+            color: #495057;
+            font-weight: 600;
+            padding: 15px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .table-custom tbody td {
+            padding: 15px;
+            vertical-align: middle;
+        }
+        
+        .table-custom tbody tr {
+            transition: background 0.2s;
+        }
+        
+        .table-custom tbody tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .btn-entrar {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            border: none;
+            border-radius: 8px;
+            padding: 6px 15px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-right: 8px;
+            transition: all 0.2s;
+        }
+        
+        .btn-entrar:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 3px 10px rgba(40, 167, 69, 0.3);
+        }
+        
+        .btn-excluir {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            border: none;
+            border-radius: 8px;
+            padding: 6px 15px;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        
+        .btn-excluir:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 3px 10px rgba(220, 53, 69, 0.3);
+        }
+        
+        .search-box {
+            position: relative;
+            max-width: 400px;
+        }
+        
+        .search-box input {
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+            padding: 12px 20px 12px 45px;
+            transition: all 0.2s;
+        }
+        
+        .search-box input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+        
+        .search-box i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #adb5bd;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+        }
+        
+        .empty-state i {
+            font-size: 80px;
+            color: #dee2e6;
+            margin-bottom: 20px;
+        }
+        
+        .empty-state h4 {
+            color: #6c757d;
+            margin-bottom: 10px;
+        }
+        
+        .empty-state p {
+            color: #adb5bd;
+        }
+        
+        .stats-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 20px;
+            padding: 8px 20px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        .btn-sm {
+            padding: 6px 15px;
+            font-size: 13px;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: white;
+            padding: 8px 18px;
+            border-radius: 50px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            color: #333;
+        }
+        
+        .user-info strong {
+            color: inherit;
+        }
+        
+        .filter-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        @media (max-width: 768px) {
+            .filter-section {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .search-box {
+                max-width: 100%;
+            }
+            
+            .page-title {
+                font-size: 22px;
+            }
+        }

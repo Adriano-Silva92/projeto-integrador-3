@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Minhas Turmas - Sistema Acadêmico</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/turmas.css}">
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+</head>
+
+<body>
+    <div class="container-main fade-in">
+        
+        <!-- CABEÇALHO INFO DO USER -->
+        <div class="header-card">
+            <div class="d-flex justify-content-between align-items-center flex-wrap">
+                <div>
+                    <h1 class="page-title">
+                        <i class="fas fa-chalkboard-teacher mr-2"></i>
+                        Minhas Turmas
+                    </h1>
+                    <p class="text-muted mt-2 mb-0">
+                        <i class="fas fa-graduation-cap"></i> Gerencie suas turmas e alunos
+                    </p>
+                </div>
+                
+                <div class="d-flex align-items-center">
+
+                   <div th:replace="~{fragments/user-info :: userInfo}"></div>
+
+                   <a class="ml-3" href="/logout">
+                       <i class="fas fa-sign-out-alt mr-1"></i> Sair
+                  </a>
+
+                </div>
+            </div>
+        </div>
+        
+        <!-- CONTEÚDO PRINCIPAL -->
+        <div class="content-card">
+            <div class="card-body p-4">
+                
+                <!-- FILTRO DA PESQUISA -->
+                <div class="filter-section">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" 
+                               id="searchInput" 
+                               class="form-control" 
+                               placeholder="Pesquisar turma por nome..."
+                               autocomplete="off">
+                    </div>
+                    
+                    <div class="stats-badge" id="totalCount" th:data-total="${turmas.size()}">
+                        <i class="fas fa-chalkboard mr-2"></i>
+                        <span th:text="${turmas.size()}">0</span> turmas no total
+                        
+                    </div>
+                    <a href="/turmas/nova" class="btn btn-primary-custom">
+                        <i class="fas fa-plus mr-2"></i>Nova Turma
+                    </a>
+                </div>
+                
+                <!-- TABELA TURMAS -->
+                <div class="table-responsive">
+                    <table class="table table-custom">
+                        <thead>
+                            <tr>
+                                <th><i class="fas fa-tag mr-2"></i>Nome da Turma</th>
+                                <th width="200"><i class="fas fa-cogs mr-2"></i>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="turmasTableBody">
+                            <tr th:each="turma : ${turmas}" th:data-nome="${turma.nome}">
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="mr-3">
+                                            <div class="bg-light rounded-circle p-2" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+                                                <i class="fas fa-users text-primary"></i>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <strong th:text="${turma.nome}">Nome da Turma</strong>
+                                            <br>
+                                            <small class="text-muted">
+                                                <i class="fas fa-id-card"></i> ID: <span th:text="${turma.id}">1</span>
+                                            </small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <a th:href="@{'/turmas/' + ${turma.id}}"
+                                       class="btn btn-entrar">
+                                        <i class="fas fa-sign-in-alt mr-1"></i>Entrar
+                                    </a>
+                                    
+                                    <button type="button"
+                                            class="btn btn-excluir"
+                                            th:data-id="${turma.id}"
+                                            th:data-nome="${turma.nome}">
+                                        <i class="fas fa-trash-alt mr-1"></i>Excluir
+                                    </button>
+                                </td>
+                            </tr>
+                            
+                            <!-- MENSAGEM QUANDO AINDA NÃO HÁ TURMAS -->
+                            <tr th:if="${turmas.empty}">
+                                <td colspan="2" class="text-center">
+                                    <div class="empty-state">
+                                        <i class="fas fa-chalkboard"></i>
+                                        <h4>Nenhuma turma encontrada</h4>
+                                        <p>Clique em "Nova Turma" para começar a criar suas turmas</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- MENSAGEM DO FILTRO DE PESQUISA -->
+                <div id="noResultsMessage" style="display: none;" class="text-center py-5">
+                    <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                    <h5 class="text-muted">Nenhuma turma encontrada</h5>
+                    <p class="text-muted">Tente usar outros termos de pesquisa</p>
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+    
+    <!-- SCRIPTS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script th:src="@{/js/turmas.js}"></script>
+  
+</body>
+</html>

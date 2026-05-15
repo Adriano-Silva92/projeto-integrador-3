@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Sistema Acadêmico - Login</title>
+    
+    <!-- FONT AWESOME ICONS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- GOOGLE FONTS -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!--  CSS PERSONALIZADO -->
+    <link rel="stylesheet" th:href="@{/css/login.css}">
+    
+    
+</head>
+<body>
+
+<div class="main-container">
+    <!-- BANNER LATERAL COM IMAGEM -->
+    <div class="banner-side">
+        <img class="banner-image" 
+             src="https://png.pngtree.com/thumb_back/fh260/background/20220728/pngtree-happy-asian-toddler-in-thai-school-uniform-ready-for-class-photo-image_47583474.jpg" 
+             alt="Aluno uniformizado feliz">
+        <div class="banner-overlay">
+            <div class="quote-icon">
+                <i class="fas fa-graduation-cap"></i>
+            </div>
+            <h1>Educação que Transforma</h1>
+            <p>Prepare-se para um futuro brilhante com nossa instituição de ensino de excelência. Aqui, cada aluno é uma história de sucesso.</p>
+        </div>
+    </div>
+
+    <!-- ÁREA DE LOGIN -->
+    <div class="login-area">
+        <div class="institution-logo">
+            <i class="fas fa-university"></i>
+            <h2>E.E Prof. Paulo Chaves</h2>
+            <p>Excelência em Educação</p>
+        </div>
+
+        <div class="login-title">
+            <h3>Bem-vindo de volta!</h3>
+            <p>Faça login para acessar sua conta</p>
+        </div>
+
+        <!-- FORM PARA SPRING -->
+        <form class="login-form" method="post" action="/logar" id="loginForm">
+            <div class="input-group">
+                <i class="fas fa-envelope"></i>
+                <input type="email" name="email" id="email" placeholder="E-mail institucional" required>
+            </div>
+
+            <div class="input-group">
+                <i class="fas fa-lock"></i>
+                <input type="password" name="senha" id="senha" placeholder="Senha" required>
+            </div>
+
+            <div class="options">
+                <label class="checkbox-label">
+                    <input type="checkbox" id="rememberMe"> Lembrar-me
+                </label>
+                <a href="#" class="forgot-password">Esqueceu a senha?</a>
+            </div>
+
+            <button type="submit" class="login-btn" id="loginBtn">
+                <i class="fas fa-sign-in-alt" style="margin-right: 8px;"></i>
+                Entrar
+            </button>
+        </form>
+        
+                <!-- MENSAGEM DE ERRO SPRING -->
+        <div class="error-message" id="errorMessage" th:if="${erro}" style="display: none;">
+            <i class="fas fa-exclamation-circle" style="margin-right: 8px;"></i>
+            <span th:text="${erro}"></span>
+        </div>
+        
+        <!-- MENSAGEM DE ERRO DE VALIDAÇÃO -->
+        <div class="error-message" id="validationError" style="display: none;">
+            <i class="fas fa-exclamation-circle" style="margin-right: 8px;"></i>
+            <span>Por favor, preencha todos os campos corretamente.</span>
+        </div>
+
+        <!-- ACESSO COM REDE SOCIAL  -->
+        <div class="social-login">
+            <p>Ou acesse com</p>
+            <div class="social-icons">
+                <a href="#" class="social-icon facebook">
+                    <i class="fab fa-facebook-f"></i>
+                </a>
+                <a href="#" class="social-icon twitter">
+                    <i class="fab fa-twitter"></i>
+                </a>
+                <a href="#" class="social-icon instagram">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a href="#" class="social-icon linkedin">
+                    <i class="fab fa-linkedin-in"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- MENSAGEM DE ERRO DO SPRING -->
+        <div class="error-message" id="errorMessage" th:if="${erro}" style="display: none;">
+            <i class="fas fa-exclamation-circle" style="margin-right: 8px;"></i>
+            <span th:text="${erro}"></span>
+        </div>
+        
+        <!-- MENSAGEM DE ERRO DE VALIDAÇÃO -->
+        <div class="error-message" id="validationError" style="display: none;">
+            <i class="fas fa-exclamation-circle" style="margin-right: 8px;"></i>
+            <span>Por favor, preencha todos os campos corretamente.</span>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/js/accessibility.js}"></script>
+<script th:src="@{/js/login.js}"></script>
+
+
+
+</body>
+</html>

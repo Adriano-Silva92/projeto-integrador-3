@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<div>
+    <h4 th:text="${aluno.nome}"></h4>
+    <p><strong>RA:</strong> <span th:text="${aluno.ra}"></span></p>
+    <p><strong>Email:</strong> <span th:text="${aluno.email}"></span></p>
+    <p><strong>Média Final:</strong> <span th:text="${#numbers.formatDecimal(aluno.mediaNotas(),1,2)}"></span></p>
+    <p><strong>Situação:</strong> 
+        <span th:class="${aluno.situacao() == 'Aprovado'} ? 'badge-aprovado' : 'badge-reprovado'"
+              th:text="${aluno.situacao()}"></span>
+    </p>
+    
+    <h5 class="mt-4">Notas por Disciplina</h5>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Disciplina</th>
+                <th>Nota</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="nota : ${notas}">
+                <td th:text="${nota.disciplina}"></td>
+                <td th:text="${nota.valor}"></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+</html>

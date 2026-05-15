@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Escolar</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>    
+</head>
+
+<body th:data-turma-id="${turma.id}">
+
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <h3><i class="fas fa-graduation-cap"></i> GestãoEscolar</h3>
+        <small>Sistema Acadêmico</small><br>
+        <small th:text="${turma.nome}">Turma</small>
+    </div>
+    <div class="sidebar-menu">
+        <a class="sidebar-menu-item active" onclick="showDashboard()">
+            <i class="fas fa-chart-line"></i> Dashboard
+        </a>
+        <a class="sidebar-menu-item"
+           href="/turmas">
+            <i class="fas fa-users"></i> Turmas
+        </a>
+        <a class="sidebar-menu-item"
+           th:href="@{/turmas/{turmaId}(turmaId=${turma.id})}">
+            <i class="fas fa-chalkboard-teacher"></i> Área do Professor
+        </a>
+        <a class="sidebar-menu-item" href="/admin">
+            <i class="fas fa-cog"></i> Admin
+        </a>
+        <a class="sidebar-menu-item" href="/logout">
+            <i class="fas fa-sign-out-alt"></i> Sair
+        </a>
+    </div>
+</div>
+
+<div class="main-content" id="mainContent">
+    <!-- RECURSOS DE ACESSIBILIDADE -->
+    <div class="top-bar">
+        <button class="toggle-btn" onclick="toggleSidebar()" title="Ocultar/Mostrar Menu">
+            <i class="fas fa-bars"></i> Menu
+        </button>
+
+        <div class="accessibility-controls">
+            <div class="theme-buttons">
+                <button class="theme-btn active" onclick="setTheme('light', event)" title="Tema Claro">
+                    <i class="fas fa-sun"></i>
+                </button>
+                <button class="theme-btn" onclick="setTheme('dark', event)" title="Tema Escuro">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <button class="theme-btn" onclick="setTheme('high-contrast', event)" title="Alto Contraste">
+                    <i class="fas fa-eye"></i>
+                </button>
+            </div>
+            
+            <div class="font-controls">
+                <button class="font-control" onclick="changeFontSize(-1)" title="Diminuir Fonte">
+                    <i class="fas fa-font"></i> A-
+                </button>
+                <button class="font-control" onclick="changeFontSize(0)" title="Fonte Normal">
+                    <i class="fas fa-font"></i> A
+                </button>
+                <button class="font-control" onclick="changeFontSize(1)" title="Aumentar Fonte">
+                    <i class="fas fa-font"></i> A+
+                </button>
+            </div>
+        </div>
+
+        <!-- FOTO PERFIL DO BANCO -->
+        <div th:replace="~{fragments/user-info :: userInfo}"></div>
+        
+    </div>
+    <div id="erroServidor" th:if="${erro}" style="display:none;">
+        [[${erro}]]
+    </div>
+
+    <div id="dashboardContent">
+        <!-- CARDS DE METRICAS -->
+        <div class="row" id="statsCards">
+            <div class="col-md-3">
+                <div class="stat-card animate-slide">
+                    <div class="stat-card-icon" style="background: #667eea; color: white;">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+                    <h6>Total de Alunos</h6>
+                    <h3 id="totalAlunos">0</h3>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card animate-slide" style="animation-delay: 0.1s">
+                    <div class="stat-card-icon" style="background: #28a745; color: white;">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h6>Média Geral</h6>
+                    <h3 id="mediaGeral">0.00</h3>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card animate-slide" style="animation-delay: 0.2s">
+                    <div class="stat-card-icon" style="background: #17a2b8; color: white;">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <h6>Aprovados</h6>
+                    <h3 id="aprovados">0</h3>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card animate-slide" style="animation-delay: 0.3s">
+                    <div class="stat-card-icon" style="background: #dc3545; color: white;">
+                        <i class="fas fa-times-circle"></i>
+                    </div>
+                    <h6>Reprovados</h6>
+                    <h3 id="reprovados">0</h3>
+                </div>
+            </div>      
+            <div class="col-md-3">
+                <div class="stat-card animate-slide">
+                    <div class="stat-card-icon" style="background: #dc3545; color: white;">
+                        <i class="fas fa-calendar-times"></i>
+                    </div>
+                    <h6>Total de Faltas</h6>
+                    <h3 id="totalFaltas" th:text="${totalFaltas}">0</h3>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card animate-slide">
+                    <div class="stat-card-icon" style="background: #28a745; color: white;">
+                        <i class="fas fa-user-group"></i>
+                    </div>
+                    <h6>Presentes Hoje</h6>
+                    <h3 id="presentesHoje" th:text="${presentesHoje}">0</h3>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card animate-slide">
+                    <div class="stat-card-icon" style="background: #dc3545; color: white;">
+                        <i class="fas fa-eye-slash"></i>
+                    </div>
+                    <h6>Faltas Hoje</h6>
+                    <h3 id="faltasHoje" th:text="${faltasHoje}">0</h3>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card animate-slide">
+                    <div class="stat-card-icon" style="background: #667eea; color: white;">
+                        <i class="fas fa-percent"></i>
+                    </div>
+                    <h6>Total Frequência</h6>
+                    <h3 id="totalFrequencia" th:text="${#numbers.formatDecimal(frequenciaTotal, 1, 1)}">0</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- GRÁFICOS DE DESEMPENHO E SITUAÇÃO -->
+        <div class="row">
+            <div class="col-md-6">
+                <div class="chart-container animate-slide" style="animation-delay: 0.4s">
+                    <h5><i class="fas fa-chart-bar"></i> Desempenho Individual</h5>
+                    <canvas id="performanceChart" height="174"></canvas>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="chart-container animate-slide" style="animation-delay: 0.5s">
+                    <h5><i class="fas fa-chart-pie"></i> Situação dos Alunos</h5>
+                    <div id="situacaoChart"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TABELA -->
+        <div class="table-container animate-slide" style="animation-delay: 0.6s">
+            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                <h5><i class="fas fa-table"></i> Lista de Alunos</h5>
+                <div>
+                    <button class="btn btn-sm btn-success" onclick="exportToExcel()">
+                        <i class="fas fa-file-excel"></i> Exportar
+                    </button>
+                    <button class="btn btn-sm btn-secondary" onclick="printTable()">
+                        <i class="fas fa-print"></i> Imprimir
+                    </button>
+                </div>
+            </div>
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Pesquisar por nome ou email..." onkeyup="filterTable()">
+                <i class="fas fa-search"></i>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-striped table-hover" id="alunosTable">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>RA</th>
+                            <th>Nome</th>
+                            <th>Email</th>
+                            <th>Média</th>
+                            <th>Situação</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        <tr><td colspan="7" class="text-center">Carregando...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL DETALHES DO ALUNO -->
+<div class="modal fade" id="detalhesModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">Detalhes do Aluno</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="modalBody"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/dashboard.js}"></script>
+
+</body>
+</html>

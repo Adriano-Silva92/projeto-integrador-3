@@ -1,0 +1,104 @@
+/* VARIÁVEIS GLOBAIS */
+:root {
+    --primary-color: #4361ee;
+    --sidebar-bg: #1a1a2e;
+    --sidebar-text: rgba(255,255,255,0.8);
+    --body-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --card-bg: white;
+    --card-text: #333;
+    --table-header-bg: #1a1a2e;
+    --border-color: #ddd;
+    --shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+/* TEMA ESCURO */
+body.dark-theme {
+    --primary-color: #6c5ce7;
+    --sidebar-bg: #0f0f1a;
+    --sidebar-text: rgba(255,255,255,0.9);
+    --body-bg: linear-gradient(135deg, #2d2d3f 0%, #1a1a2e 100%);
+    --card-bg: #1e1e2e;
+    --card-text: #e0e0e0;
+    --table-header-bg: #0f0f1a;
+    --border-color: #2d2d3f;
+    --shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+/* ALTO CONTRASTE */
+body.high-contrast {
+    --body-bg: #000000;
+    --card-bg: #ffffff;
+    --card-text: #000000;
+    --sidebar-bg: #000000;
+    --border-color: #000000;
+}
+
+/* AJUSTES ESPECÍFICOS DE CONTRASTE */
+body.high-contrast .badge-aprovado {
+    background: #00ff00;
+    color: #000;
+}
+
+body.high-contrast .badge-reprovado {
+    background: #ff0000;
+    color: #fff;
+}
+
+/* BASE GLOBAL */
+body {
+    background: var(--body-bg);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    transition: all 0.3s ease;
+}
+
+/* COMPONENTES QUE USAM VARIÁVEIS */
+
+.sidebar {
+    background: var(--sidebar-bg);
+    /* color: white; */
+}
+
+.sidebar-menu-item {
+    color: var(--sidebar-text);
+}
+
+.stat-card,
+.chart-container,
+.table-container,
+.user-info {
+    background: var(--card-bg);
+    color: var(--card-text);
+    box-shadow: var(--shadow);
+}
+
+.search-bar input {
+    border: 1px solid var(--border-color);
+    background: var(--card-bg);
+    color: var(--card-text);
+}
+
+.toggle-btn,
+.theme-btn,
+.font-control {
+    background: var(--card-bg);
+    color: var(--card-text);
+    box-shadow: var(--shadow);
+}
+
+/* ESTILOS DA TABELA */
+.table {
+    color: var(--card-text);
+}
+
+.table thead th {
+    background: var(--table-header-bg);
+    color: white;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(0,0,0,0.05);
+}
+
+body.dark-theme .table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(255,255,255,0.05);
+}

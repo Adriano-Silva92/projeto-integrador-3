@@ -1,0 +1,18 @@
+<form th:action="@{/usuarios/salvar}" th:object="${usuario}" method="post">
+
+    <input type="hidden" th:field="*{id}">
+
+    <input type="text" th:field="*{nome}" placeholder="Nome" class="form-control mb-2" required>
+
+    <input type="text" th:field="*{email}" placeholder="email" class="form-control mb-2" required>
+
+    <input type="password" th:field="*{senha}" placeholder="Senha" class="form-control mb-2" required>
+
+    <select th:field="*{role}" class="form-control mb-2">
+        <option value="ADMIN">Admin</option>
+        <option value="PROFESSOR">Professor</option>
+        <option value="ALUNO">Aluno</option>
+    </select>
+
+    <button class="btn btn-primary">Salvar</button>
+</form>
