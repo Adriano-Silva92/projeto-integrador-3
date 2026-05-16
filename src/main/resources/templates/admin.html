@@ -488,12 +488,13 @@
 <!-- MODAL USUÁRIO -->
 <div class="modal fade" id="modalUsuario" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content modal-content-custom">
     <div class="modal-header modal-header-custom"><h5 class="modal-title"><i class="fas fa-id-card"></i> Novo Usuário</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
-    <form id="formNovoUsuario">
+    <form id="formNovoUsuario" enctype="multipart/form-data">
         <div class="modal-body">
             <div class="mb-3"><label>Nome *</label><input type="text" name="nome" id="usuarioNome" class="form-control" required></div>
             <div class="mb-3"><label>Email *</label><input type="email" name="email" id="usuarioEmail" class="form-control" required></div>
             <div class="mb-3"><label>Senha *</label><input type="password" name="senha" id="usuarioSenha" class="form-control" required></div>
             <div class="mb-3"><label>Perfil</label><select name="role" id="usuarioRole" class="form-control"><option value="ADMIN">Administrador</option><option value="PROFESSOR">Professor</option><option value="ALUNO">Aluno</option></select></div>
+            <div class="mb-3"><label>Foto de Perfil</label><input type="file" name="foto" id="usuarioFoto" class="form-control"accept="image/*"></div>
         </div>
         <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button><button type="submit" id="btnSalvarUsuario" class="btn-custom-primary">Criar Usuário</button></div>
     </form>
