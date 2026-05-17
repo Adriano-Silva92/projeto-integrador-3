@@ -494,7 +494,17 @@
             <div class="mb-3"><label>Email *</label><input type="email" name="email" id="usuarioEmail" class="form-control" required></div>
             <div class="mb-3"><label>Senha *</label><input type="password" name="senha" id="usuarioSenha" class="form-control" required></div>
             <div class="mb-3"><label>Perfil</label><select name="role" id="usuarioRole" class="form-control"><option value="ADMIN">Administrador</option><option value="PROFESSOR">Professor</option><option value="ALUNO">Aluno</option></select></div>
-            <div class="mb-3"><label>Foto de Perfil</label><input type="file" name="foto" id="usuarioFoto" class="form-control"accept="image/*"></div>
+            <div class="mb-3"><label class="form-label">Foto de Perfil</label>
+                <div class="d-flex align-items-center gap-3">
+                    <img id="previewFotoUsuario" src="/img/user_padrao.png" class="rounded-circle border" width="120" height="120" style="object-fit: cover;">
+                    <div class="flex-grow-1">    
+                        <input type="file" name="foto" id="usuarioFoto" class="form-control"accept="image/*">
+                        <small class="text-muted">
+                            JPG, PNG ou WEBP
+                        </small>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button><button type="submit" id="btnSalvarUsuario" class="btn-custom-primary">Criar Usuário</button></div>
     </form>
@@ -620,7 +630,7 @@
                     <td>${user.email}</td>
                     <td><span class="badge-role ${user.role}">${user.role}</span></td>
                     <td>
-                        <button class="btn btn-sm btn-outline-primary" onclick="abrirEditarUsuario(${user.id}, '${user.nome}', '${user.email}', '${user.role}')">
+                        <button class="btn btn-sm btn-outline-primary" onclick="abrirEditarUsuario(${user.id}, '${user.nome}', '${user.email}', '${user.role}', '${user.foto || ""}')">
                             <i class="fas fa-edit"></i> Editar
                         </button>
                         <button class="btn btn-sm btn-outline-danger btn-action" onclick="excluirUsuario(${user.id})">
@@ -684,7 +694,7 @@
     //MODAL EDITAR USUÁRIO
     let usuarioEditandoId = null;
 
-        function abrirEditarUsuario(id, nome, email, role) {
+        function abrirEditarUsuario(id, nome, email, role, foto) {
 
         usuarioEditandoId = id;
 
@@ -692,6 +702,11 @@
         document.getElementById('usuarioEmail').value = email;
         document.getElementById('usuarioSenha').value = '';
         document.getElementById('usuarioRole').value = role;
+        document.getElementById('previewFotoUsuario').src =
+            foto && foto !== 'null'
+                ? foto
+                : '/img/user_padrao.png';
+
 
         //MUDA TÍTULO DO MODAL
         document.querySelector('#modalUsuario .modal-title').innerHTML =
@@ -913,7 +928,7 @@
 
         if (usuarioEditandoId) {
             url = `/usuarios/editar-ajax/${usuarioEditandoId}`;
-            method = "PUT";
+            method = "POST";
         }
 
         fetch(url, {
@@ -938,11 +953,31 @@
         });
     });
     
+    // PREVIEW FOTO USUÁRIO
+    document.getElementById('usuarioFoto').addEventListener('change', function(event) {
+
+        const arquivo = event.target.files[0];
+
+        if (arquivo) {
+
+            const reader = new FileReader();
+ 
+            reader.onload = function(e) {
+                document.getElementById('previewFotoUsuario').src = e.target.result;
+            }
+
+            reader.readAsDataURL(arquivo);
+        }
+    });
+    
     //RESET FORMULÁRIO USUÁRIO PARA PADRÃO
     document.querySelector('[data-bs-target="#modalUsuario"]').addEventListener('click', () => {
         usuarioEditandoId = null;
 
         document.getElementById('formNovoUsuario').reset();
+        
+        document.getElementById('previewFotoUsuario').src =
+            '/img/user_padrao.png';
 
         document.getElementById('btnSalvarUsuario').innerText = "Criar Usuário";
 

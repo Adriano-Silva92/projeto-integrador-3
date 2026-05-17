@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -17,6 +16,8 @@ import com.cloudinary.Cloudinary;
 import org.springframework.web.multipart.MultipartFile;
 import com.cloudinary.utils.ObjectUtils;
 import java.util.Map;
+import jakarta.servlet.http.HttpServletRequest;
+
 
 import br.appLogin.appLogin.model.Aluno;
 import br.appLogin.appLogin.model.Professor;
@@ -105,10 +106,10 @@ public class UsuarioController {
             if (foto != null && !foto.isEmpty()) {
 
                 java.util.Map<String, Object> uploadResult =
-                        cloudinary.uploader().upload(
-                                foto.getBytes(),
-                                com.cloudinary.utils.ObjectUtils.emptyMap()
-                        );
+                    cloudinary.uploader().upload(
+                        foto.getBytes(),
+                        com.cloudinary.utils.ObjectUtils.emptyMap()
+                );
 
                 // URL DA IMAGEM
                 String imageUrl =
@@ -168,7 +169,7 @@ public class UsuarioController {
     }
     
     // EDITAR AJAX
-    @PutMapping("/editar-ajax/{id}")
+    @PostMapping("/editar-ajax/{id}")
     @ResponseBody
     public java.util.Map<String, Object> editarAjax(
             @PathVariable Long id,
@@ -176,7 +177,8 @@ public class UsuarioController {
             @RequestParam String email,
             @RequestParam String senha,
             @RequestParam String role,
-            @RequestParam(value = "foto", required = false) MultipartFile foto) {
+            @RequestParam(value = "foto", required = false) MultipartFile foto,
+            HttpServletRequest request) {
 
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
@@ -209,6 +211,8 @@ public class UsuarioController {
         }
 
         usuarioRepository.save(usuario);
+        // ATUALIZA USUÁRIO DA SESSÃO
+        request.getSession().setAttribute("usuarioLogado", usuario);
 
         java.util.Map<String, Object> response = new java.util.HashMap<>();
         response.put("id", usuario.getId());
