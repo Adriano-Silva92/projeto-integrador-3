@@ -5,6 +5,8 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 
+import java.time.LocalDateTime;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
@@ -31,6 +33,10 @@ public class Usuario {
     private Role role;
 
     private String foto;
+    
+    private boolean online = false;
+    
+    private LocalDateTime ultimoAcesso;
 
     
     @OneToOne(mappedBy = "usuario")
@@ -46,12 +52,14 @@ public class Usuario {
     }
 
     // CONSTRUTOR COMPLETO
-    public Usuario(String nome, String email, String senha, Role role, String foto) {
+    public Usuario(String nome, String email, String senha, Role role, String foto, boolean online, LocalDateTime ultimoAcesso) {
         this.nome = nome;
         this.email = email;
         this.senha = senha;
         this.role = role;
         this.foto = foto;
+        this.online = online;
+        this.ultimoAcesso = ultimoAcesso;
     }
 
     // GETTERS E SETTERS
@@ -102,6 +110,22 @@ public class Usuario {
 
     public void setFoto(String foto) {
         this.foto = foto;
+    }
+    
+    public boolean isOnline() {
+        return online;
+    }
+
+    public void setOnline(boolean online) {
+        this.online = online;
+    }
+
+    public LocalDateTime getUltimoAcesso() {
+        return ultimoAcesso;
+    }
+
+    public void setUltimoAcesso(LocalDateTime ultimoAcesso) {
+        this.ultimoAcesso = ultimoAcesso;
     }
 
     public Aluno getAluno() {

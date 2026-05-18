@@ -31,11 +31,10 @@ public class AutenticacaoInterceptor implements HandlerInterceptor {
         System.out.println("Usuario: " + usuario);
 
         // PROTEGE /admin
-        if (uri.startsWith("/admin")) {
-            if (role != Role.ADMIN && role != Role.PROFESSOR) {
-                response.sendRedirect("/dashboard");
-                return false;
-            }
+        // ADMIN AREA
+        if (uri.startsWith("/admin") && role != Role.ADMIN) {
+            response.sendRedirect("/acesso-negado");
+            return false;
         }
 
         // ALUNO NÃO ACESSA O DASHBOARD PRINCIPAL

@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import java.time.LocalDateTime;
 
 import br.appLogin.appLogin.model.Usuario;
 import br.appLogin.appLogin.model.Role;
@@ -62,7 +63,17 @@ public class LoginController {
         Usuario usuarioLogado = this.ur.login(usuario.getEmail(), usuario.getSenha());
 
         if (usuarioLogado != null) {
-
+        	
+            // USUÁRIO ONLINE
+            usuarioLogado.setOnline(true);
+            
+            // DATA/HORA ÚLTIMO ACESSO
+            usuarioLogado.setUltimoAcesso(LocalDateTime.now());
+            
+            // SALVA NO BANCO
+            ur.save(usuarioLogado);
+            
+            // SALVA SESSÃO
             session.setAttribute("usuarioLogado", usuarioLogado);
 
             return redirectPorRole(usuarioLogado.getRole());
@@ -72,29 +83,18 @@ public class LoginController {
         return "login";
     }
 
-    // CADASTRO
-    @GetMapping("/cadastro")
-    public String mostrarCadastro() {
-        return "cadastro";
-    }
-
-    @PostMapping("/cadastro")
-    public String salvarCadastro(
-            @jakarta.validation.Valid Usuario usuario,
-            org.springframework.validation.BindingResult result) {
-
-        if (result.hasErrors()) {
-            return "cadastro";
-        }
-
-        ur.save(usuario);
-
-        return "redirect:/login";
-    }
 
     // LOGOUT
     @GetMapping("/logout")
-    public String logout(HttpSession session) {
+    public String logout(HttpSession session) {    	
+        Usuario usuario = (Usuario) session.getAttribute("usuarioLogado");
+        
+        if (usuario != null) {
+            //SALVA NO BANCO ONLINE = FALSE
+            usuario.setOnline(false);
+
+            ur.save(usuario);
+        }
         session.invalidate();
         return "redirect:/login";
     }

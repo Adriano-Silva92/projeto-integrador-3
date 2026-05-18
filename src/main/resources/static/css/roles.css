@@ -1,0 +1,14 @@
+/* estilos para o badge role do user info */
+.badge-role {
+    padding: 2px 6px;
+    border-radius: 20px;
+    font-size: 0.6rem;
+    font-weight: 600;
+    display: inline-block;
+    text-align: center;
+    margin-top: 2px;
+    line-height: 1.2;
+}
+.badge-role.ADMIN { background: #e0e7ff; color: #3730a3; }
+.badge-role.PROFESSOR { background: #fef3c7; color: #b45309; }
+.badge-role.ALUNO { background: #d1fae5; color: #065f46; }
